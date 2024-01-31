@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract Amina is ERC20 {
     uint256 public maxSupply;
     address public taxAddress;
-    uint256 public constant TAX_PERCENTAGE = 1;
+    uint256 public taxPercentage = 1;
 
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply, address _taxAddress) 
         ERC20(_name, _symbol) 
@@ -25,10 +25,20 @@ contract Amina is ERC20 {
     }
 
     function _update(address sender, address recipient, uint256 amount) internal virtual override {
-        uint256 tax = (amount * TAX_PERCENTAGE) / 100;
+        uint256 tax = (amount * taxPercentage) / 100;
         uint256 amountAfterTax = amount - tax;
 
         super._update(sender, taxAddress, tax);
         super._update(sender, recipient, amountAfterTax);
+    }
+
+    function changeTaxRecipient (address _newTaxAddress) external {
+        assert (_newTaxAddress != address(0));
+        taxAddress = _newTaxAddress;
+    }
+
+    function changeTaxPercentage (uint256 _newTaxPercentage) external {
+        assert (_newTaxPercentage > 0 && _newTaxPercentage < 100);
+        taxPercentage = _newTaxPercentage;
     }
 }
