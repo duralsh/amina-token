@@ -2,14 +2,15 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Amina is ERC20 {
+contract Amina is ERC20, Ownable {
     uint256 public maxSupply;
     address public taxAddress;
     uint256 public taxPercentage = 1;
 
     constructor(string memory _name, string memory _symbol, uint256 _maxSupply, address _taxAddress) 
-        ERC20(_name, _symbol) 
+        ERC20(_name, _symbol) Ownable(msg.sender)
     {
         maxSupply = _maxSupply;
         taxAddress = _taxAddress;
